@@ -1,8 +1,6 @@
   provider "aws" {
     region     = "eu-west-2"
-    access_key = "AKIAXA76NSHNR2YOTXN5"
-    secret_key = "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"
-  }
+    }
 
   resource "aws_vpc" "dev_vpc" {
     cidr_block = "10.0.0.0/16"
