@@ -5,11 +5,11 @@ variable "AWSSecret" {description = var.environments}
 variable "cidr_block" {description = var.env }
 variable "SubnetRegion" {description = "dev"}
   provider "aws" {
+
     region = var.AWSRegion
     access_key = var.AWSAccessKey
     secret_key = var.AWSSecret
   }
-
   resource "aws_vpc" "dev_vpc" {
     cidr_block = var.cidr_block
         tags = {
