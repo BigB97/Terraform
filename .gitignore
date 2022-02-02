@@ -3,4 +3,5 @@
 # .tfstate files
 *.tfstate
 *.tfstate.*
-
+terraform*
+.env
