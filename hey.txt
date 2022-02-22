@@ -1,0 +1,68 @@
+
+variable "AWSAccessKey" { description = "dev" }
+variable "AWSRegion" { description = "dev" }
+variable "AWSSecret" { description = "dev" }
+variable "cidr_block" { description = "dev" }
+variable "SubnetRegion" { description = "dev" }
+
+provider "aws" {
+  region     = var.AWSRegion
+  access_key = var.AWSAccessKey
+  secret_key = var.AWSSecret
+}
+
+resource "aws_vpc" "dev_vpc" {
+  cidr_block = var.cidr_block
+  tags = {
+    Name = "DeVpc"
+  }
+}
+
+resource "aws_subnet" "dev_subnet1" {
+  vpc_id            = aws_vpc.dev_vpc.id
+  cidr_block        = var.cidr_block
+  availability_zone = var.SubnetRegion
+  tags = {
+    Name = "devTerra"
+  }
+}
+
+resource "aws_internet_gateway" "myitg" {
+  vpc_id = aws_vpc.dev_vpc.id
+  tags = {
+    Name: "itb-res"
+  }
+}
+
+resource "aws_route_table" "routetb" {
+  vpc_id = aws_vpc.dev_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.myitg.id
+  }
+  tags = {
+    Name: "my-routetb"
+  }
+}
+ 
+resource "aws_route_table_association" "routeTA" {
+  subnet_id = aws_subnet.dev_subnet1.id
+  route_table_id = aws_route_table.routetb.id
+}
+
+#   data "aws_vpc" "existing_vpc" {
+#     default = true
+#   }
+
+#   resource "aws_subnet" "dev_subnet2" {
+#     vpc_id = data.aws_vpc.existing_vpc.id
+#     cidr_block = "172.31.48.0/20"
+#     availability_zone = "eu-west-2a"
+#     tags = {
+#       Name = "subnet-dev-terra2"
+#     }
+#   }
+
+# output "dev_subnet" {
+#   value =  aws_vpc.dev_vpc.id
+# }
